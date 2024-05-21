@@ -13,9 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,8 +50,9 @@ public class History {
     private boolean status = true;
 
     // Relaciones
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "idArticle", joinColumns =@JoinColumn(name = "id"),inverseJoinColumns = @JoinColumn(name = "idArticle"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idArticle", referencedColumnName = "id",insertable=false, 
+			updatable = false)
     private List<Article> articles;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
