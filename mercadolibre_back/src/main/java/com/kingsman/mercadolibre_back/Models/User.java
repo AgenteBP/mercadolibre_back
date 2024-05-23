@@ -41,5 +41,8 @@ public class User {
 
     @Column(nullable = true)
     private Integer nroVentas;
+
+    @Column(nullable = false)
+    private boolean active = true;
     
 }
