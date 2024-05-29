@@ -14,6 +14,7 @@ public class ArticleServices {
     @Autowired
     private ArticleRepositories articleRepositories;
 
+
     public Article addArticle(Article article){
         return articleRepositories.save(article);
     }
@@ -40,7 +41,20 @@ public class ArticleServices {
     }
 
     public Optional<Article> getArticleById(Integer id){
-        return articleRepositories.findById(id);
+        return articleRepositories.findById(id);}
+
+    public Integer postQualify(int qualifyVerified, String email, String name) {
+        // Sumo la anterior calificacion y divido por 2
+        Integer previousQualify = articleRepositories.getPreviousQualify(email, name);
+        if(previousQualify == 0){
+            return articleRepositories.postQualifyWithEmail(qualifyVerified, email, name);
+        }
+        else{
+            qualifyVerified = previousQualify + qualifyVerified / 2;
+            return articleRepositories.postQualifyWithEmail(qualifyVerified, email, name);
+        }
+        
+
     }
     
 }

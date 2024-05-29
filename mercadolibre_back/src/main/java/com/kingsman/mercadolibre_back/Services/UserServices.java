@@ -3,16 +3,15 @@ package com.kingsman.mercadolibre_back.Services;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.kingsman.mercadolibre_back.Repositories.HistoryRepositories;
 import com.kingsman.mercadolibre_back.Repositories.UserRepositories;
 import com.kingsman.mercadolibre_back.Models.History;
 import com.kingsman.mercadolibre_back.Models.User;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -20,6 +19,14 @@ public class UserServices {
 
     @Autowired
     private UserRepositories userRepositories;
+
+    public Page<Object[]> getAllUser(int page, int quantityPerPage) {
+        return userRepositories.getAllRepository(PageRequest.of(page, quantityPerPage));
+    }
+
+    public Integer getSumatory(String email) {
+        return userRepositories.getSumatoryUser(email);
+    }
 
     @Transactional
     public User insert(User user) {
@@ -43,7 +50,9 @@ public class UserServices {
                 return userRepositories.save(userExistente);
             } else {
                 // No existe un usuario con el mismo correo electrónico, proceder con la inserción
-
+                user.setValorizacion((float) 0);
+                user.setNroCompras(0);
+                user.setNroVentas(0);
                 return userRepositories.save(user);
             }
             
@@ -57,7 +66,7 @@ public class UserServices {
         }
         return user2;
     }
-
+  
     @Transactional
     public User getUser(int  id) {
         User user = userRepositories.findById(id);
