@@ -12,6 +12,8 @@ import com.kingsman.mercadolibre_back.Models.User;
 public interface UserRepositories extends JpaRepository<User, Integer>{
     
     User findByEmail(String email);
+  
+    User findById(int id);
 
     Page<Object[]> getAllRepository(PageRequest pages);
 
@@ -22,5 +24,4 @@ public interface UserRepositories extends JpaRepository<User, Integer>{
 
     Page<Object[]> findAllByActiveTrue(PageRequest pages);
 
-    
 }

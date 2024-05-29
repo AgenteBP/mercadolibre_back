@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.kingsman.mercadolibre_back.Models.User;
 import com.kingsman.mercadolibre_back.Services.UserServices;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +71,12 @@ public class UserController {
             // Si la inserción falla, puedes devolver un código de estado 500 (INTERNAL_SERVER_ERROR)
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/{id}/average")
+    public ResponseEntity<Void> updateValorization(@PathVariable Integer id){
+        userService.averageValorization(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,7 +1,10 @@
 package com.kingsman.mercadolibre_back.Controllers;
 
-import java.util.Map;
 
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,9 @@ import com.kingsman.mercadolibre_back.Services.HistoryServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
+import com.kingsman.mercadolibre_back.Models.History;
+import com.kingsman.mercadolibre_back.Services.HistoryServices;
 
 @RestController
 @RequestMapping("/history")
@@ -46,4 +52,12 @@ public class HistoryControllers {
     }
     
     
+    @Autowired
+    private HistoryServices historyServices;
+
+    @PutMapping("/{id}")
+    public ResponseEntity<History> removeMovements(@PathVariable Integer id, @RequestBody History history) {
+        History updateHistory = historyServices.deleteMovements(id);
+        return ResponseEntity.ok(updateHistory);
+    }
 }
