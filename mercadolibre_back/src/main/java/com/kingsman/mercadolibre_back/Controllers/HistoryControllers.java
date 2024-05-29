@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kingsman.mercadolibre_back.Services.HistoryServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
 import com.kingsman.mercadolibre_back.Models.History;
-import com.kingsman.mercadolibre_back.Services.HistoryServices;
 
 @RestController
 @RequestMapping("/history")
@@ -50,10 +47,6 @@ public class HistoryControllers {
         }
 
     }
-    
-    
-    @Autowired
-    private HistoryServices historyServices;
 
     @PutMapping("/{id}")
     public ResponseEntity<History> removeMovements(@PathVariable Integer id, @RequestBody History history) {
