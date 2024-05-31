@@ -37,7 +37,7 @@ public class Courier {
     private String description;
 
     @Column(nullable = false, length = 40)
-    private String email;
+    private String email; 
 
     // Relaciones
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

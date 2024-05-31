@@ -43,11 +43,14 @@ public class History {
     @Column(nullable = true)
     private Integer sellerQualification;
 
+    @Column(nullable = false)
+    private Integer quantity;
+
     @Enumerated(EnumType.STRING) 
     private Payment payment;
 
     @Column(nullable = false)
-    private boolean status = true;
+    private boolean status = false;
 
     // Relaciones
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

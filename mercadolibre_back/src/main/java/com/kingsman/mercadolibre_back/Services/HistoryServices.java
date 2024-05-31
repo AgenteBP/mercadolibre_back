@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.kingsman.mercadolibre_back.Models.History;
 import com.kingsman.mercadolibre_back.Repositories.HistoryRepositories;
+import jakarta.transaction.Transactional;
 
 @Service
 public class HistoryServices {
@@ -26,6 +27,11 @@ public class HistoryServices {
     public Page<Object[]> getMovements(int page, int quantityPerPage, String userEmail) {
 
         return historyRepositories.getMovementsHistory(PageRequest.of(page, quantityPerPage), userEmail);
+    }
+
+    @Transactional
+    public void finalizePurchases(Integer idComprador) {
+        historyRepositories.finalizePurchases(idComprador);
     }
 
 }

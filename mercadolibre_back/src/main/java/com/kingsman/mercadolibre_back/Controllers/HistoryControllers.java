@@ -53,4 +53,10 @@ public class HistoryControllers {
         History updateHistory = historyServices.deleteMovements(id);
         return ResponseEntity.ok(updateHistory);
     }
+
+    @PutMapping("/finalize/{idComprador}")
+    public ResponseEntity<Void> finalizePurchases(@PathVariable Integer idComprador) {
+        historyServices.finalizePurchases(idComprador);
+        return ResponseEntity.ok().build();
+    }
 }
