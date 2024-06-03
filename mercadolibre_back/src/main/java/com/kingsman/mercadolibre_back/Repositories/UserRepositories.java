@@ -1,5 +1,7 @@
 package com.kingsman.mercadolibre_back.Repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,5 +25,8 @@ public interface UserRepositories extends JpaRepository<User, Integer>{
     Integer getSumatoryUser(@Param("email") String email);
 
     Page<Object[]> findAllByActiveTrue(PageRequest pages);
+
+    @Query(nativeQuery = true, value ="SELECT * FROM user u WHERE u.email = :email u.active = true")
+    Optional<User> getUserByEmail(@Param("email") String email);
 
 }

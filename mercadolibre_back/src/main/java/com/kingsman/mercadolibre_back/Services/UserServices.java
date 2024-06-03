@@ -4,12 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.kingsman.mercadolibre_back.Repositories.HistoryRepositories;
 import com.kingsman.mercadolibre_back.Repositories.UserRepositories;
+import com.kingsman.mercadolibre_back.Security.JWT.JwtService;
+import com.kingsman.mercadolibre_back.Security.JWT.TokenResponse;
+import com.kingsman.mercadolibre_back.Security.Request.LoginRequest;
 import com.kingsman.mercadolibre_back.Models.History;
 import com.kingsman.mercadolibre_back.Models.User;
 import jakarta.transaction.Transactional;
@@ -20,6 +26,15 @@ public class UserServices {
     @Autowired
     private UserRepositories userRepositories;
 
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Page<Object[]> getAllUser(int page, int quantityPerPage) {
         return userRepositories.getAllRepository(PageRequest.of(page, quantityPerPage));
     }
@@ -28,43 +43,52 @@ public class UserServices {
         return userRepositories.getSumatoryUser(email);
     }
 
+   
+    public TokenResponse login(LoginRequest request){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
+
+        UserDetails userDetails = userRepositories.getUserByEmail(request.getUserName()).orElseThrow();
+        String token = jwtService.getToken(userDetails);
+
+        return TokenResponse.builder().token(token).build();
+    }
+
     @Transactional
-    public User insert(User user) {
+    public TokenResponse insert(User user) {
         
-        User user2 =  new User();
         User userExistente = userRepositories.findByEmail(user.getEmail());
-        try {
-            
-            if (userExistente != null) {
-                // Ya existe un usuario con el mismo correo electrónico
-                // Puedes decidir qué hacer en este punto, por ejemplo, actualizar el usuario existente
 
-                userExistente.setName(user.getName());
-                userExistente.setLastName(user.getLastName());
-                userExistente.setPassword(user.getPassword());
-                userExistente.setValorizacion(user.getValorizacion());
-                userExistente.setNroCompras(user.getNroCompras());
-                userExistente.setNroVentas(user.getNroVentas());
+        if (userExistente != null) {
+            // Ya existe un usuario con el mismo correo electrónico
+            // Puedes decidir qué hacer en este punto, por ejemplo, actualizar el usuario existente
 
-                // Guardar el usuario actualizado en la base de datos
-                return userRepositories.save(userExistente);
-            } else {
-                // No existe un usuario con el mismo correo electrónico, proceder con la inserción
-                user.setValorizacion((float) 0);
-                user.setNroCompras(0);
-                user.setNroVentas(0);
-                return userRepositories.save(user);
-            }
+            userExistente.setName(user.getName());
+            userExistente.setLastName(user.getLastName());
+            userExistente.setPassword(passwordEncoder.encode(user.getPassword()));
+            userExistente.setValorizacion(user.getValorizacion());
+            userExistente.setNroCompras(user.getNroCompras());
+            userExistente.setNroVentas(user.getNroVentas());
+
+            // Guardar el usuario actualizado en la base de datos
+            userRepositories.save(userExistente);
             
-        } catch (DataIntegrityViolationException e) {
-            // e.printStackTrace();
-            // throw new ErrorResponse(e.getMostSpecificCause().getMessage(),
-            //         HttpStatus.UNPROCESSABLE_ENTITY);
-            System.out.println("no funcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            e.printStackTrace();  // Imprime el log completo de la excepción
-            System.out.println("Error en la inserción: " + e.getMessage());
+            return TokenResponse.builder()
+            .token(jwtService.getToken(userExistente))
+            .build();
+        } else {
+            // No existe un usuario con el mismo correo electrónico, proceder con la inserción
+            user.setValorizacion((float) 0);
+            user.setNroCompras(0);
+            user.setNroVentas(0);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            
+            userRepositories.save(user);
+            
+            return TokenResponse.builder()
+            .token(jwtService.getToken(user))
+            .build();
         }
-        return user2;
+        
     }
   
     @Transactional
