@@ -21,6 +21,9 @@ import com.kingsman.mercadolibre_back.Models.Article;
 @RequestMapping("/article")
 public class ArticleControllers {
 
+    private final int DEFAULT_PAGE_NUMBER = 0;
+    private final int DEFAULT_QUANTITY_PER_PAGE = 10;
+
     @Autowired
     private ArticleServices articleServices;
 
@@ -30,7 +33,7 @@ public class ArticleControllers {
         return ResponseEntity.ok(newArticle);
     }
 
-    @PutMapping("/id")
+    @PutMapping("/{id}")
     public ResponseEntity<Article> updateArticle(@PathVariable Integer id, @RequestBody Article article) throws Exception {
         Article updateArticle = articleServices.updateArticle(id, article);
         return ResponseEntity.ok(updateArticle);
@@ -46,14 +49,19 @@ public class ArticleControllers {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<Article>> searchArticles(
+    public ResponseEntity<Page<Object>> searchArticles(
             @RequestParam(required = false) String searchTerm,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Color color,
             @RequestParam(required = false) Float minSale,
-            @RequestParam(required = false) Float maxSale) {
+            @RequestParam(required = false) Float maxSale, 
+            @RequestParam(required = true) Integer page,
+            @RequestParam(required = true) Integer quantityPerPage) {
+
+            int page1 = !(page.equals(null)) ? page : DEFAULT_PAGE_NUMBER;
+            int quantityPerPage1 = !(quantityPerPage.equals(null)) ? quantityPerPage : DEFAULT_QUANTITY_PER_PAGE;
         
-            Page<Article> articles = articleServices.searchArticles(searchTerm, type, color, minSale, maxSale);
+            Page<Object> articles = articleServices.searchArticles(searchTerm, type, color, minSale, maxSale, page1, quantityPerPage1);
         return ResponseEntity.ok(articles);
     }
     

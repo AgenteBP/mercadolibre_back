@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/user")
-// @CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
+// @CrossOrigin(origins = "http://localhost:8080")
 public class UserController {
 
     private final int DEFAULT_PAGE_NUMBER = 0;
@@ -61,13 +61,13 @@ public class UserController {
     
     
 
-    @PostMapping(value = "login")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request)
     {
         return ResponseEntity.ok(userService.login(request));
     }
 
-    @PostMapping(value = "register")
+    @PostMapping("/register")
     public ResponseEntity<?> postUsuarios(@RequestBody User user) {
         // User userInsertado = userService.insert(user);
 

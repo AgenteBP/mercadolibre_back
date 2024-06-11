@@ -29,9 +29,16 @@ public class HistoryServices {
         return historyRepositories.getMovementsHistory(PageRequest.of(page, quantityPerPage), userEmail);
     }
 
-    @Transactional
-    public void finalizePurchases(Integer idComprador) {
-        historyRepositories.finalizePurchases(idComprador);
+    public Object sellingInsert(History history) {
+        history.setSellerQualification(0);
+        history.setStatus(false);
+        return historyRepositories.save(history);
     }
+
+    @Transactional
+    public void finalizePurchases(Integer idComprador, Integer qualify) {
+        historyRepositories.finalizePurchases(idComprador, qualify);
+    }
+
 
 }

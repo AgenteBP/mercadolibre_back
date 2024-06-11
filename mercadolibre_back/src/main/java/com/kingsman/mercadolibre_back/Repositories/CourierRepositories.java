@@ -10,7 +10,7 @@ import com.kingsman.mercadolibre_back.Models.Courier;
 
 public interface CourierRepositories extends JpaRepository<Courier, Integer> {
 
-    @Query(nativeQuery = true, value ="SELECT * FROM courier c WHERE c.idSellingUser = :idUser")
+    @Query(nativeQuery = true, value ="SELECT * FROM courier c WHERE c.id_selling_user = :idUser")
     Page<Courier> getAllMessagePage(@Param("idUser") Integer idUser, Pageable pageable);
 
     @Query(nativeQuery = true, value ="SELECT u.email FROM user u WHERE u.id = :idSellingUser")

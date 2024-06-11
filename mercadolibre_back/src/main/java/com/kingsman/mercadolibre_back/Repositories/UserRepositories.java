@@ -17,7 +17,7 @@ public interface UserRepositories extends JpaRepository<User, Integer>{
   
     User findById(int id);
 
-    Page<Object[]> getAllRepository(PageRequest pages);
+    // Page<Object[]> getAllRepository(PageRequest pages);
 
     @Query(nativeQuery = true, value ="SELECT SUM(h.seller_qualification) FROM history h " +
     "JOIN user u ON h.id_selling_user = u.id " +
@@ -26,7 +26,7 @@ public interface UserRepositories extends JpaRepository<User, Integer>{
 
     Page<Object[]> findAllByActiveTrue(PageRequest pages);
 
-    @Query(nativeQuery = true, value ="SELECT * FROM user u WHERE u.email = :email u.active = true")
+    @Query(nativeQuery = true, value ="SELECT * FROM user u WHERE u.email = :email AND u.active = true")
     Optional<User> getUserByEmail(@Param("email") String email);
 
 }

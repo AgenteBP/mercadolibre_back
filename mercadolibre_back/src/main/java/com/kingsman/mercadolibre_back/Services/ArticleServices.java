@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.kingsman.mercadolibre_back.Enumerated.Color;
@@ -45,10 +46,11 @@ public class ArticleServices {
     public Optional<Article> getArticleById(Integer id){
         return articleRepositories.findById(id);}
 
-    public Page<Article> searchArticles(String searchTerm, String type, Color color, Float minSale, Float maxSale) {
+    public Page<Object> searchArticles(String searchTerm, String type, Color color, Float minSale, Float maxSale, int page, int quantityPerPage) {
         // Limpiar y procesar el término de búsqueda
         String cleanedSearchTerm = searchTerm != null ? searchTerm.trim().toLowerCase() : "";
-        return articleRepositories.searchArticles(cleanedSearchTerm, type, color, minSale, maxSale);
+        String colorValue = color != null ? color.toString().toLowerCase() : null;
+        return articleRepositories.searchArticles(cleanedSearchTerm, type, colorValue, minSale, maxSale, PageRequest.of(page, quantityPerPage));
     }
 
 

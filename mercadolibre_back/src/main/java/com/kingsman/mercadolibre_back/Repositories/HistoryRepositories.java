@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 
 public interface HistoryRepositories extends JpaRepository<History, Integer>{
 
-    List<History> findByUserIdAndValorizationIsNotNull(Integer userId);
+    List<History> findByIdSellingUserAndQuantityIsNotNull(Integer idSellingUser);
 
     @Query(nativeQuery = true, value = "SELECT h.* FROM history h " +
                                        "JOIN user u ON h.id_selling_user = u.id " +
@@ -23,8 +23,8 @@ public interface HistoryRepositories extends JpaRepository<History, Integer>{
     @Transactional
     @Query(nativeQuery = true, value = "UPDATE article a " +
                    "JOIN history h ON a.id = h.id_article " +
-                   "SET a.stock = a.stock - h.quantity, h.status = true " +
+                   "SET a.stock = a.stock - h.quantity, h.status = true, h.seller_qualification = :qualify " +
                    "WHERE h.id_buying_user = :idBuyingUser AND h.status = false")
-    void finalizePurchases(@Param("idBuyingUser") Integer idBuyingUser);
+    void finalizePurchases(@Param("idBuyingUser") Integer idBuyingUser, @Param("qualify") Integer qualify);
     
 }

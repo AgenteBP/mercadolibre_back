@@ -1,13 +1,14 @@
 package com.kingsman.mercadolibre_back.Repositories;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.kingsman.mercadolibre_back.Enumerated.Color;
+//import com.kingsman.mercadolibre_back.Enumerated.Color;
 import com.kingsman.mercadolibre_back.Models.Article;
 
 @Repository
@@ -17,21 +18,19 @@ public interface ArticleRepositories extends JpaRepository<Article, Integer>{
                                 "WHERE u.email = :email AND a.name = :name")
     Integer getPreviousQualify(@Param("email") String email, @Param("name") String name);
 
-    @Query("SELECT a FROM Article a WHERE " +
-           "(LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-           "OR LOWER(a.type) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-           "OR LOWER(a.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
-           "AND (:type IS NULL OR a.type = :type) " +
-           "AND (:color IS NULL OR a.color = :color) " +
-           "AND (:minSale IS NULL OR a.sale >= :minSale) " +
-           "AND (:maxSale IS NULL OR a.sale <= :maxSale) " +
+    @Query(nativeQuery = true, value = "SELECT * FROM article a WHERE " +
+           "(COALESCE(:searchTerm, '') = '' OR LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+           "AND (COALESCE(:type, '') = '' OR LOWER(a.type) = LOWER(:type)) " +
+           "AND (COALESCE(:color, '') = '' OR LOWER(a.color) = LOWER(:color)) " +
+           "AND (COALESCE(:minSale, 0) = 0 OR a.sale >= :minSale) " +
+           "AND (COALESCE(:maxSale, 0) = 0 OR a.sale <= :maxSale) " +
            "AND a.stock > 0 " +
            "AND a.active = true")
-    Page<Article> searchArticles(@Param("searchTerm") String searchTerm,
+    Page<Object> searchArticles(@Param("searchTerm") String searchTerm,
                                  @Param("type") String type,
-                                 @Param("color") Color color,
+                                 @Param("color") String color,
                                  @Param("minSale") Float minSale,
-                                 @Param("maxSale") Float maxSale);
+                                 @Param("maxSale") Float maxSale, PageRequest pages);
 
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE article a " +

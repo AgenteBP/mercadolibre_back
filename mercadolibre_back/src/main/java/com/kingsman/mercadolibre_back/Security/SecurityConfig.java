@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
-                .requestMatchers("/auth/**","/usuarios/**","/resultados","sendEmail/**").permitAll()
+                .requestMatchers("/user/register", "/user/login").permitAll()
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->

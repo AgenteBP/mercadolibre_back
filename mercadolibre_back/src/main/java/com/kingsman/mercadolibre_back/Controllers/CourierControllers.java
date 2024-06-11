@@ -29,12 +29,12 @@ public class CourierControllers {
         int quantityPerPage = map.containsKey("quantity") ? Integer.parseInt(map.get("quantity")) : DEFAULT_QUANTITY_PER_PAGE;
         Integer idUser = Integer.parseInt(map.get("idUser"));
 
-        if(!(idUser == null)){
+        if(!(idUser.equals(null))){
             Page<Courier> allMessageUser = courierServices.getAllMessage(idUser, page, quantityPerPage);
             return new ResponseEntity<>(allMessageUser, HttpStatus.ACCEPTED);
         }
         else{
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -48,7 +48,12 @@ public class CourierControllers {
         String description = map.get("description");
         Integer idArticle = Integer.parseInt(map.get("idArticle"));
 
-        if( !(idArticle == null || idSellingUser == null || recipient.isEmpty())){
+        // System.out.println("email es "+ map.get("email"));
+        // System.out.println("id de vendedorrrrrrr es "+ Integer.parseInt(map.get("idSellingUser")));
+        // System.out.println("la descripcion es "+ map.get("description"));
+        // System.out.println("idArticle es "+ Integer.parseInt(map.get("idArticle")));
+
+        if( !(idArticle.equals(null) || idSellingUser.equals(null) || recipient.isEmpty())){
             courierServices.sendMessage(recipient, idSellingUser, description, idArticle);
             return new ResponseEntity<String>("Message sent", HttpStatus.ACCEPTED);
         }

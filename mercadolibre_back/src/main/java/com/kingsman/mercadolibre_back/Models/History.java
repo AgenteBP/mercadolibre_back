@@ -1,6 +1,6 @@
 package com.kingsman.mercadolibre_back.Models;
 
-import java.util.List;
+//import java.util.List;
 
 import com.kingsman.mercadolibre_back.Enumerated.Payment;
 import jakarta.persistence.CascadeType;
@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,10 +52,10 @@ public class History {
     private boolean status = false;
 
     // Relaciones
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "idArticle", referencedColumnName = "id",insertable=false, 
 			updatable = false)
-    private List<Article> articles;
+    private Article articles;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "idSellingUser", referencedColumnName = "id",insertable=false, 

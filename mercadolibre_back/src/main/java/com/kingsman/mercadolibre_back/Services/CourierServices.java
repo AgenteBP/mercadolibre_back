@@ -24,7 +24,7 @@ public class CourierServices {
     public void sendMessage(String recipient, Integer idSellingUser, String description, Integer idArticle) {
         
         Courier courier = new Courier();
-        courier.setEmail(description);
+        courier.setEmail(recipient);
         courier.setIdSellingUser(idSellingUser);
         courier.setDescription(description);
         courier.setIdArticle(idArticle);

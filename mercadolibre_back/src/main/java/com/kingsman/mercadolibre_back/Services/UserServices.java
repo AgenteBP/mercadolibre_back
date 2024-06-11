@@ -36,7 +36,7 @@ public class UserServices {
     private PasswordEncoder passwordEncoder;
 
     public Page<Object[]> getAllUser(int page, int quantityPerPage) {
-        return userRepositories.getAllRepository(PageRequest.of(page, quantityPerPage));
+        return userRepositories.findAllByActiveTrue(PageRequest.of(page, quantityPerPage));
     }
 
     public Integer getSumatory(String email) {
@@ -101,10 +101,10 @@ public class UserServices {
     private HistoryRepositories historyRepositories;
 
     @Transactional
-    public void averageValorization(Integer userId){
+    public void averageValorization(Integer idSellingUser){
 
         // traigo todos las valorizcaciones de los objetos q hayan sido insertado su valorizacion
-        List<History> histories = historyRepositories.findByUserIdAndValorizationIsNotNull(userId);
+        List<History> histories = historyRepositories.findByIdSellingUserAndQuantityIsNotNull(idSellingUser);
 
         // tranforma todos los valores de la lista, los mapea y saca el promedio
         OptionalDouble averageVOpt = histories.stream().mapToDouble(History::getSellerQualification).average();
@@ -112,7 +112,7 @@ public class UserServices {
         // una vez q tenemos el promedio de la valorizacion lo insertamos en el usuario
         if(averageVOpt.isPresent()) {
             Double averageVal = averageVOpt.getAsDouble();
-            Optional<User> user = userRepositories.findById(userId);
+            Optional<User> user = userRepositories.findById(idSellingUser);
             User user2 = user.get();
             user2.setValorizacion(averageVal.floatValue());
             userRepositories.save(user2);

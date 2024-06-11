@@ -1,7 +1,7 @@
 package com.kingsman.mercadolibre_back.Controllers;
 
-
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Map;
@@ -54,9 +54,14 @@ public class HistoryControllers {
         return ResponseEntity.ok(updateHistory);
     }
 
+    @PostMapping("/selling")
+    public ResponseEntity<Object> selling(@RequestBody History history){
+        return ResponseEntity.ok(historyServices.sellingInsert(history));
+    }
+
     @PutMapping("/finalize/{idComprador}")
-    public ResponseEntity<Void> finalizePurchases(@PathVariable Integer idComprador) {
-        historyServices.finalizePurchases(idComprador);
+    public ResponseEntity<Void> finalizePurchases(@PathVariable Integer idComprador, @RequestParam Integer qualify) {
+        historyServices.finalizePurchases(idComprador, qualify);
         return ResponseEntity.ok().build();
     }
 }
