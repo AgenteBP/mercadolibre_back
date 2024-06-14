@@ -1,22 +1,48 @@
+# version: '3.9'
+# services:
+#   app:
+#     container_name: app
+#     image: mercadolibre_back
+#     ports:
+#       -8080:8080
+#     depends_on:
+#       - db
+#     environment:
+#       - SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mercadolibre_bd
+#       - SPRING_DATASOURCE_USERNAME: root
+#       - SPRING_DATASOURCE_PASSWORD: 
+#   db:
+#     container_name: db
+#     image: mysql:8
+#     environment:
+#       - MYSQL_ROOT_PASSWORD:
+#       - MYSQL_DATABASE: mercadolibre_bd
+#       - MYSQL_USER: root
+#     ports:
+#       -3306:3306
+
+# version del chatGPT
 version: '3.9'
 services:
   app:
     container_name: app
-    image: mercadolibre_back
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      -8080:8080
+      - "8080:8080"
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mercadolibre_bd
-      - SPRING_DATASOURCE_USERNAME: root
-      - SPRING_DATASOURCE_PASSWORD: 
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mercadolibre_bd
+      SPRING_DATASOURCE_USERNAME: root
+      # No se incluye SPRING_DATASOURCE_PASSWORD porque no se usa contraseña
   db:
     container_name: db
     image: mysql:8
     environment:
-      - MYSQL_ROOT_PASSWORD:
-      - MYSQL_DATABASE: mercadolibre_bd
-      - MYSQL_USER: root
+      # No se incluye MYSQL_ROOT_PASSWORD porque no se usa contraseña
+      MYSQL_DATABASE: mercadolibre_bd
+      MYSQL_USER: root
     ports:
-      -3306:3306
+      - "3306:3306"
